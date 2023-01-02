@@ -12,8 +12,8 @@ class User
     public function __construct()
     {
         $this->db = new mysqli('localhost', 'root', '', 'classes');
-        if ($this->db->connect_errno){
-            error_log('Erreur de connexion : ' . $this->db->connect_errno);
+        if ($this->db->connect_errno) {
+            error_log('Erreur de connexion à la db : ' . $this->db->connect_errno);
         }
     }
 
@@ -23,15 +23,26 @@ class User
 
         $insert = $this->db->prepare($sql);
 
-        $insert->bind_param('sssss', $login, $password, $email, $firstname, $lastname);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
+
+        if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Erreur : format email invalide');
+        }
+
+        $insert->bind_param('sssss', $login, $hashed_password, $checked_email, $firstname, $lastname);
 
         $insert->execute();
 
         return [$login, $password, $email, $firstname, $lastname];
     }
-
 }
 
 $test = new User;
-$test->register('admin', 'admin', 'felix.hauger@laplateforme.io', 'Félix', 'HAUGER');
+try {
+    if ($test->register('test', 'test', 'test@test.fr', 'test', 'test')) {
+        echo 'Inscription réussie';
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 var_dump($test);
