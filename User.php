@@ -35,14 +35,64 @@ class User
 
         return [$login, $password, $email, $firstname, $lastname];
     }
+
+    public function connect($login, $password)
+    {
+        // check if login exists
+        $sql = 'SELECT login, password, email, firstname, lastname FROM users WHERE login = ?';
+
+        $select = $this->db->prepare($sql);
+
+        $select->bind_param('s', $login);
+
+        $select->execute();
+
+        $result = $select->get_result();
+
+        $user = $result->fetch_assoc();
+
+        if ($user !== null) {
+            // var_dump($user);
+
+            // check if password matches
+            if (password_verify($password, $user['password']) || $password === $user['password']) {
+                $this->login = $user['login'];
+                $this->email = $user['email'];
+                $this->firstname = $user['firstname'];
+                $this->lastname = $user['lastname'];
+
+                return [
+                    $this->login,
+                    $this->email,
+                    $this->firstname,
+                    $this->lastname
+                ];
+            }
+        }
+
+        throw new Exception('Erreur : identifiants incorrects.');
+
+    }
+
+    // public function checkCrentials()
+
 }
 
 $test = new User;
+// try {
+//     if ($test->register('titi', 'titi', 'titi@titi.fr', 'titi', 'titi')) {
+//         echo 'Inscription réussie';
+//     }
+// } catch (Exception $e) {
+//     echo $e->getMessage();
+// }
+
 try {
-    if ($test->register('test', 'test', 'test@test.fr', 'test', 'test')) {
-        echo 'Inscription réussie';
+    if ($test->connect('test', 'test')) {
+        echo 'Connexion réussie';
     }
 } catch (Exception $e) {
     echo $e->getMessage();
 }
-var_dump($test);
+
+// var_dump($test);
