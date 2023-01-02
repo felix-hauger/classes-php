@@ -1,14 +1,44 @@
 <?php
-
+/**
+ * Class User
+ * 
+ * Handles User service including using mysqli
+ */
 class User
 {
+    /**
+     * @var mysqli used to init connection to database
+     */
     private $db;
+
+    /**
+     * @var int used to get & update user infos
+     */
     private $id;
+
+    /**
+     * @var string used to register, log in & update user infos
+     */
     public $login;
+
+    /**
+     * @var string no usage yet
+     */
     public $email;
+
+    /**
+     * @var string personal info
+     */
     public $firstname;
+
+    /**
+     * @var string personal info
+     */
     public $lastname;
 
+    /**
+     * set connection to the database
+     */
     public function __construct()
     {
         $this->db = new mysqli('localhost', 'root', '', 'classes');
@@ -17,7 +47,11 @@ class User
         }
     }
 
-    public function register($login, $password, $email, $firstname, $lastname)
+    /**
+     * register a user in database
+     * @return array with user infos
+     */
+    public function register($login, $password, $email, $firstname, $lastname): array
     {
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception('Erreur : format email invalide');
@@ -36,6 +70,10 @@ class User
         return [$login, $password, $email, $firstname, $lastname];
     }
 
+    /**
+     * log user in session
+     * @return array with instanciated User infos
+     */
     public function connect($login, $password)
     {
         // check if login exists
@@ -87,6 +125,9 @@ class User
 
     // public function checkCrentials()
 
+    /**
+     * update user infos in db
+     */
     public function update($login, $password, $email, $firstname, $lastname)
     {
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -139,6 +180,9 @@ class User
         // ];
     }
 
+    /**
+     * unset user infos from session
+     */
     public function disconnect()
     {
         unset($_SESSION['id']);
@@ -148,6 +192,9 @@ class User
         unset($_SESSION['lastname']);
     }
 
+    /**
+     * delete user from database
+     */
     public function delete()
     {
         $sql = 'DELETE FROM users WHERE id = ?';
