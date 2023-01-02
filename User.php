@@ -61,6 +61,15 @@ class User
                 $this->firstname = $user['firstname'];
                 $this->lastname = $user['lastname'];
 
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+
+                $_SESSION['login'] = $this->login;
+                $_SESSION['email'] = $this->email;
+                $_SESSION['firstname'] = $this->firstname;
+                $_SESSION['lastname'] = $this->lastname;
+
                 return [
                     $this->login,
                     $this->email,
