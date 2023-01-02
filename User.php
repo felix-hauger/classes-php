@@ -39,7 +39,7 @@ class User
     public function connect($login, $password)
     {
         // check if login exists
-        $sql = 'SELECT login, password, email, firstname, lastname FROM users WHERE login = ?';
+        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = ?';
 
         $select = $this->db->prepare($sql);
 
@@ -56,6 +56,7 @@ class User
 
             // check if password matches
             if (password_verify($password, $user['password']) || $password === $user['password']) {
+                $this->id = $user['id'];
                 $this->login = $user['login'];
                 $this->email = $user['email'];
                 $this->firstname = $user['firstname'];
@@ -65,12 +66,14 @@ class User
                     session_start();
                 }
 
+                $_SESSION['id'] = $this->id;
                 $_SESSION['login'] = $this->login;
                 $_SESSION['email'] = $this->email;
                 $_SESSION['firstname'] = $this->firstname;
                 $_SESSION['lastname'] = $this->lastname;
 
                 return [
+                    $this->id,
                     $this->login,
                     $this->email,
                     $this->firstname,
