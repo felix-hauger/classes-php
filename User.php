@@ -85,6 +85,14 @@ class User
 
     // public function checkCrentials()
 
+    public function disconnect()
+    {
+        unset($_SESSION['login']);
+        unset($_SESSION['email']);
+        unset($_SESSION['firstname']);
+        unset($_SESSION['lastname']);
+    }
+
 }
 
 $test = new User;
@@ -104,4 +112,8 @@ try {
     echo $e->getMessage();
 }
 
+var_dump($_SESSION);
+
+$test->disconnect();
+var_dump($_SESSION);
 // var_dump($test);
