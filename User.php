@@ -83,24 +83,36 @@ class User
         }
 
         throw new Exception('Erreur : identifiants incorrects.');
-
     }
 
     // public function checkCrentials()
 
     public function disconnect()
     {
+        unset($_SESSION['id']);
         unset($_SESSION['login']);
         unset($_SESSION['email']);
         unset($_SESSION['firstname']);
         unset($_SESSION['lastname']);
     }
 
+    public function delete()
+    {
+        $sql = 'DELETE FROM users WHERE id = ?';
+
+        $delete = $this->db->prepare($sql);
+
+        $delete->bind_param('i', $_SESSION['id']);
+
+        $delete->execute();
+
+        $this->disconnect();
+    }
 }
 
 $test = new User;
 // try {
-//     if ($test->register('titi', 'titi', 'titi@titi.fr', 'titi', 'titi')) {
+//     if ($test->register('del', 'del', 'del@del.fr', 'del', 'del')) {
 //         echo 'Inscription réussie';
 //     }
 // } catch (Exception $e) {
@@ -118,5 +130,6 @@ try {
 var_dump($_SESSION);
 
 $test->disconnect();
+// $test->delete();
 var_dump($_SESSION);
 // var_dump($test);
