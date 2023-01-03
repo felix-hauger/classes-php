@@ -52,7 +52,7 @@ class User
      * register a user in database
      * @return array with user infos
      */
-    public function register($login, $password, $email, $firstname, $lastname): array
+    public function register($login, $password, $email, $firstname, $lastname): void
     {
         // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -68,15 +68,13 @@ class User
         $insert->bind_param('sssss', $login, $hashed_password, $checked_email, $firstname, $lastname);
 
         $insert->execute();
-
-        return [$login, $hashed_password, $checked_email, $firstname, $lastname];
     }
 
     /**
      * log user in session
      * @return object $this
      */
-    public function connect($login, $password)
+    public function connect($login, $password): object
     {
         // check if login exists
         $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = ?';
@@ -133,7 +131,7 @@ class User
      * update user infos in db
      * @return object $this
      */
-    public function update($login, $password, $email, $firstname, $lastname)
+    public function update($login, $password, $email, $firstname, $lastname): object
     {
         // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -161,7 +159,7 @@ class User
         return $this;
     }
 
-    public function getAllInfos()
+    public function getAllInfos(): array
     {
         return [
             'id' => $this->id,
@@ -172,22 +170,22 @@ class User
         ];
     }
 
-    public function getLogin()
+    public function getLogin(): string
     {
         return $this->login;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getFirstname()
+    public function getFirstname(): string
     {
         return $this->firstname;
     }
 
-    public function getLastname()
+    public function getLastname(): string
     {
         return $this->lastname;
     }
@@ -228,7 +226,7 @@ $test = new User;
 // }
 
 try {
-    if ($test->connect('toto', 'toto')) {
+    if ($test->connect('tete', 'tete')) {
         echo 'Connexion réussie';
     }
 } catch (Exception $e) {
