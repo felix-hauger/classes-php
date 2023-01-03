@@ -74,7 +74,7 @@ class User
 
     /**
      * log user in session
-     * @return array with instanciated User infos
+     * @return object $this
      */
     public function connect($login, $password)
     {
@@ -92,7 +92,6 @@ class User
         $user = $result->fetch_assoc();
 
         if ($user !== null) {
-            // var_dump($user);
 
             // check if password matches
             if (password_verify($password, $user['password']) || $password === $user['password']) {
@@ -117,6 +116,10 @@ class User
 
     // public function checkCrentials()
 
+    /**
+     * checked if user is logged in session
+     * @return boolean
+     */
     public function isConnected(): bool
     {
         if (isset($_SESSION['user'])) {
@@ -128,9 +131,11 @@ class User
 
     /**
      * update user infos in db
+     * @return object $this
      */
     public function update($login, $password, $email, $firstname, $lastname)
     {
+        // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception('Erreur : format email invalide');
         }
@@ -196,7 +201,7 @@ class User
     }
 
     /**
-     * delete user from database
+     * delete user from database, then disconnect
      */
     public function delete()
     {
