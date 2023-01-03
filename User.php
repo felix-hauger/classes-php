@@ -180,6 +180,22 @@ class User
         // ];
     }
 
+    public function getAllInfos() {
+        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = ?';
+
+        $select = $this->db->prepare($sql);
+
+        $select->bind_param('i', $_SESSION['id']);
+
+        $select->execute();
+
+        $result = $select->get_result();
+
+        $user = $result->fetch_assoc();
+
+        return $user;
+    }
+
     /**
      * unset user infos from session
      */
@@ -236,6 +252,9 @@ var_dump($_SESSION);
 //     echo $e->getMessage();
 // }
 
+$user_infos = $test->getAllInfos();
+
+var_dump($user_infos);
 
 // var_dump($_SESSION);
 
