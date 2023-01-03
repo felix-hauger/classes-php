@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class User
  * 
@@ -115,6 +116,15 @@ class User
 
     // public function checkCrentials()
 
+    public function isConnected(): bool
+    {
+        if (isset($_SESSION['user'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * update user infos in db
      */
@@ -170,12 +180,13 @@ class User
         // ];
     }
 
-    public function getAllInfos() {
+    public function getAllInfos()
+    {
         $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = ?';
 
         $select = $this->db->prepare($sql);
 
-        $select->bind_param('i', $_SESSION['id']);
+        $select->bind_param('i', $_SESSION['id']); // $_SESSION['id'] will be replaced by $this->id
 
         $select->execute();
 
