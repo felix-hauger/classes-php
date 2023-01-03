@@ -137,48 +137,23 @@ class User
 
         $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
 
-        // $logged_id = $_SESSION['id'];
-
         // update user infos in db
         $sql = 'UPDATE users SET login = ?, password = ?, email = ?, firstname = ?, lastname = ? WHERE id = ?';
 
         $update = $this->db->prepare($sql);
 
-        $update->bind_param('sssssi', $login, $hashed_password, $checked_email, $firstname, $lastname, $_SESSION['id']);
+        $update->bind_param('sssssi', $login, $hashed_password, $checked_email, $firstname, $lastname, $this->id);
 
         $update->execute();
 
-        // update user infos from db in instance & session
-        // $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = ?';
+        // update object infos that will be updated in the session variable
+        $this->login = $login;
+        $this->email = $email;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
 
-        // $select = $this->db->prepare($sql);
-
-        // $select->bind_param('i', $logged_id);
-
-        // $select->execute();
-
-        // $result = $select->get_result();
-
-        // $user = $result->fetch_assoc();
-
-        // $this->id = $user['id'];
-        // $this->login = $user['login'];
-        // $this->email = $user['email'];
-        // $this->firstname = $user['firstname'];
-        // $this->lastname = $user['lastname'];
-
-        // $_SESSION['login'] = $this->login;
-        // $_SESSION['email'] = $this->email;
-        // $_SESSION['firstname'] = $this->firstname;
-        // $_SESSION['lastname'] = $this->lastname;
-
-        // return [
-        //     $this->id,
-        //     $this->login,
-        //     $this->email,
-        //     $this->firstname,
-        //     $this->lastname
-        // ];
+        // return to get value, and we can display success message
+        return $this;
     }
 
     public function getAllInfos()
@@ -188,7 +163,7 @@ class User
             'login' => $this->login,
             'email' => $this->email,
             'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
+            'lastname' => $this->lastname
         ];
     }
 
@@ -236,6 +211,7 @@ class User
         $this->disconnect();
     }
 }
+
 session_start();
 $test = new User;
 // try {
