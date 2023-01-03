@@ -54,6 +54,7 @@ class User
      */
     public function register($login, $password, $email, $firstname, $lastname): array
     {
+        // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception('Erreur : format email invalide');
         }
@@ -182,19 +183,13 @@ class User
 
     public function getAllInfos()
     {
-        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = ?';
-
-        $select = $this->db->prepare($sql);
-
-        $select->bind_param('i', $_SESSION['id']); // $_SESSION['id'] will be replaced by $this->id
-
-        $select->execute();
-
-        $result = $select->get_result();
-
-        $user = $result->fetch_assoc();
-
-        return $user;
+        return [
+            'id' => $this->id,
+            'login' => $this->login,
+            'email' => $this->email,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+        ];
     }
 
     /**
@@ -255,8 +250,8 @@ try {
 
 $test->isConnected();
 
-$test->disconnect();
-$test->isConnected();
+// $test->disconnect();
+// $test->isConnected();
 // var_dump($_SESSION);
 // $test->delete();
 // var_dump($test);
