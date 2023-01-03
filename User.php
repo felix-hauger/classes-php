@@ -67,7 +67,7 @@ class User
 
         $insert->execute();
 
-        return [$login, $password, $email, $firstname, $lastname];
+        return [$login, $hashed_password, $checked_email, $firstname, $lastname];
     }
 
     /**
@@ -208,7 +208,7 @@ class User
         $this->disconnect();
     }
 }
-
+session_start();
 $test = new User;
 // try {
 //     if ($test->register('toto', 'toto', 'toto@toto.fr', 'toto', 'toto')) {
@@ -228,15 +228,16 @@ try {
 
 var_dump($_SESSION);
 
-try {
-    if ($test->update('tutu', 'tutu', 'tutu@tutu.fr', 'tutu', 'tutu')) {
-        echo 'Mise à jour des informations réussie';
-    }
-} catch (Exception $e) {
-    echo $e->getMessage();
-}
+// try {
+//     if ($test->update('tutu', 'tutu', 'tutu@tutu.fr', 'tutu', 'tutu')) {
+//         echo 'Mise à jour des informations réussie';
+//     }
+// } catch (Exception $e) {
+//     echo $e->getMessage();
+// }
 
-var_dump($_SESSION);
+
+// var_dump($_SESSION);
 
 // $test->disconnect();
 // $test->delete();
