@@ -104,19 +104,9 @@ class User
                     session_start();
                 }
 
-                $_SESSION['id'] = $this->id;
-                $_SESSION['login'] = $this->login;
-                $_SESSION['email'] = $this->email;
-                $_SESSION['firstname'] = $this->firstname;
-                $_SESSION['lastname'] = $this->lastname;
+                $_SESSION['user'] = $this;
 
-                return [
-                    $this->id,
-                    $this->login,
-                    $this->email,
-                    $this->firstname,
-                    $this->lastname
-                ];
+                return $this;
             }
         }
 
@@ -201,11 +191,7 @@ class User
      */
     public function disconnect()
     {
-        unset($_SESSION['id']);
-        unset($_SESSION['login']);
-        unset($_SESSION['email']);
-        unset($_SESSION['firstname']);
-        unset($_SESSION['lastname']);
+        unset($_SESSION['user']);
     }
 
     /**
@@ -242,7 +228,7 @@ try {
     echo $e->getMessage();
 }
 
-var_dump($_SESSION);
+// var_dump($_SESSION);
 
 // try {
 //     if ($test->update('tutu', 'tutu', 'tutu@tutu.fr', 'tutu', 'tutu')) {
@@ -252,12 +238,14 @@ var_dump($_SESSION);
 //     echo $e->getMessage();
 // }
 
-$user_infos = $test->getAllInfos();
+// $user_infos = $test->getAllInfos();
 
-var_dump($user_infos);
+// var_dump($user_infos);
 
+$test->isConnected();
+
+$test->disconnect();
+$test->isConnected();
 // var_dump($_SESSION);
-
-// $test->disconnect();
 // $test->delete();
 // var_dump($test);
