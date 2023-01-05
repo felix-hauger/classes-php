@@ -52,7 +52,7 @@ class User
      * register a user in database
      * @return array with user infos
      */
-    public function register($login, $password, $email, $firstname, $lastname): void
+    public function register($login, $password, $email, $firstname, $lastname):void
     {
         // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -74,14 +74,14 @@ class User
      * log user in session
      * @return object $this
      */
-    public function connect($login, $password): object
+    public function connect($login_or_email, $password): object
     {
         // check if login exists
-        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = ?';
+        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = ? OR email = ?';
 
         $select = $this->db->prepare($sql);
 
-        $select->bind_param('s', $login);
+        $select->bind_param('ss', $login_or_email, $login_or_email);
 
         $select->execute();
 
@@ -217,8 +217,11 @@ class User
 
 session_start();
 $test = new User;
+// $test->login = 'titi';
+// var_dump($test->login);
+// var_dump($test->isLoginInDb());
 // try {
-//     if ($test->register('toto', 'toto', 'toto@toto.fr', 'toto', 'toto')) {
+//     if ($test->register('tot', 'toto', 'toto@toto.fr', 'toto', 'toto')) {
 //         echo 'Inscription réussie';
 //     }
 // } catch (Exception $e) {
@@ -226,7 +229,7 @@ $test = new User;
 // }
 
 try {
-    if ($test->connect('tete', 'tete')) {
+    if ($test->connect('toto@toto.fr', 'toto')) {
         echo 'Connexion réussie';
     }
 } catch (Exception $e) {
@@ -247,7 +250,7 @@ try {
 
 // var_dump($user_infos);
 
-$test->isConnected();
+// var_dump($test->isConnected());
 
 // $test->disconnect();
 // $test->isConnected();
