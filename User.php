@@ -18,12 +18,12 @@ class User
     private $id;
 
     /**
-     * @var string used to register, log in & update user infos
+     * @var string used to log in & update user infos in database
      */
     public $login;
 
     /**
-     * @var string no usage yet
+     * @var string personal info, used to login & update user infos in database
      */
     public $email;
 
@@ -78,7 +78,7 @@ class User
 
         foreach ($users as $user) {
 
-            var_dump($user);
+            // var_dump($user);
             if ($user['login'] === $login) {
                 $logins_array['found_login'] = true;
                 // $foundLogin = true;
@@ -95,6 +95,7 @@ class User
 
     /**
      * register a user in database
+     * for parameters infos see class properties
      * @return array with user infos
      */
     public function register($login, $password, $email, $firstname, $lastname):void
@@ -104,6 +105,7 @@ class User
             throw new Exception('Erreur : format email invalide');
         }
 
+        // check if login & email exist in database
         $search_logins = $this->verifyLogins($login, $checked_email);
 
         if ($search_logins['found_login']) {
@@ -126,6 +128,8 @@ class User
 
     /**
      * log user in session
+     * @param string $login_or_email to compare to both logins & emails in db
+     * @param string $password to check credentials
      * @return object $this
      */
     public function connect($login_or_email, $password): object
@@ -183,6 +187,7 @@ class User
 
     /**
      * update user infos in db
+     * for parameters infos see class properties
      * @return object $this
      */
     public function update($login, $password, $email, $firstname, $lastname): object
