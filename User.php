@@ -49,6 +49,51 @@ class User
     }
 
     /**
+     * check if login and email exist in database
+     * @param string $login check the login column
+     * @param string $email check the email column
+     * @return array of 2 booleans
+     */
+    public function verifyLogins($login, $email)
+    {
+        // are false until found in db
+        $logins_array = [
+            'found_login' => false,
+            'found_email' => false
+        ];
+
+        $sql = 'SELECT `login`, `email` FROM users WHERE login = ? OR email = ?';
+
+        $select = $this->db->prepare($sql);
+
+        $select->bind_param('ss', $login, $email);
+
+        $select->execute();
+
+        $result = $select->get_result();
+
+        $users = $result->fetch_all(MYSQLI_ASSOC);
+
+        // var_dump($users);
+
+        foreach ($users as $user) {
+
+            var_dump($user);
+            if ($user['login'] === $login) {
+                $logins_array['found_login'] = true;
+                // $foundLogin = true;
+            }
+
+            if ($user['email'] === $email) {
+                // $foundEmail = true;
+                $logins_array['found_email'] = true;
+            }
+        }
+        
+        return $logins_array;
+    }
+
+    /**
      * register a user in database
      * @return array with user infos
      */
@@ -59,15 +104,24 @@ class User
             throw new Exception('Erreur : format email invalide');
         }
 
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
+        $search_logins = $this->verifyLogins($login, $checked_email);
 
-        $sql = 'INSERT INTO users (login, password, email, firstname, lastname) VALUES (?, ?, ?, ?, ?)';
+        if ($search_logins['found_login']) {
+            throw new Exception('Le login existe est déjà utilisé');
+        } elseif ($search_logins['found_email']) {
+            throw new Exception('Adresse mail déjà utilisée');
+        } else {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
+    
+            $sql = 'INSERT INTO users (login, password, email, firstname, lastname) VALUES (?, ?, ?, ?, ?)';
+    
+            $insert = $this->db->prepare($sql);
+    
+            $insert->bind_param('sssss', $login, $hashed_password, $checked_email, $firstname, $lastname);
+    
+            $insert->execute();
+        }
 
-        $insert = $this->db->prepare($sql);
-
-        $insert->bind_param('sssss', $login, $hashed_password, $checked_email, $firstname, $lastname);
-
-        $insert->execute();
     }
 
     /**
@@ -138,25 +192,34 @@ class User
             throw new Exception('Erreur : format email invalide');
         }
 
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
+        $search_logins = $this->verifyLogins($login, $checked_email);
 
-        // update user infos in db
-        $sql = 'UPDATE users SET login = ?, password = ?, email = ?, firstname = ?, lastname = ? WHERE id = ?';
+        if ($search_logins['found_login']) {
+            throw new Exception('Le login existe déjà !');
+        } elseif ($search_logins['found_email']) {
+            throw new Exception('Adresse mail déjà utilisée');
+        } else {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
+    
+            // update user infos in db
+            $sql = 'UPDATE users SET login = ?, password = ?, email = ?, firstname = ?, lastname = ? WHERE id = ?';
+    
+            $update = $this->db->prepare($sql);
+    
+            $update->bind_param('sssssi', $login, $hashed_password, $checked_email, $firstname, $lastname, $this->id);
+    
+            $update->execute();
+    
+            // update object infos that will be updated in the session variable
+            $this->login = $login;
+            $this->email = $email;
+            $this->firstname = $firstname;
+            $this->lastname = $lastname;
+    
+            // return to get value, and we can display success message
+            return $this;
+        }
 
-        $update = $this->db->prepare($sql);
-
-        $update->bind_param('sssssi', $login, $hashed_password, $checked_email, $firstname, $lastname, $this->id);
-
-        $update->execute();
-
-        // update object infos that will be updated in the session variable
-        $this->login = $login;
-        $this->email = $email;
-        $this->firstname = $firstname;
-        $this->lastname = $lastname;
-
-        // return to get value, and we can display success message
-        return $this;
     }
 
     public function getAllInfos(): array
@@ -221,7 +284,7 @@ $test = new User;
 // var_dump($test->login);
 // var_dump($test->isLoginInDb());
 // try {
-//     if ($test->register('tot', 'toto', 'toto@toto.fr', 'toto', 'toto')) {
+//     if ($test->register('tete', 'tete', 'tete@tete.fr', 'tete', 'tete')) {
 //         echo 'Inscription réussie';
 //     }
 // } catch (Exception $e) {
@@ -229,8 +292,8 @@ $test = new User;
 // }
 
 try {
-    if ($test->connect('toto@toto.fr', 'toto')) {
-        echo 'Connexion réussie';
+    if ($test->connect('tete@tete.fr', 'tete')) {
+        echo 'Connexion réussie ! Vous êtes maintenant connecté en tant que ' . $test->{'login'} . "\n";
     }
 } catch (Exception $e) {
     echo $e->getMessage();
@@ -238,13 +301,13 @@ try {
 
 // var_dump($_SESSION);
 
-// try {
-//     if ($test->update('tutu', 'tutu', 'tutu@tutu.fr', 'tutu', 'tutu')) {
-//         echo 'Mise à jour des informations réussie';
-//     }
-// } catch (Exception $e) {
-//     echo $e->getMessage();
-// }
+try {
+    if ($test->update('zeze', 'zeze', 'zeze@zeze.fr', 'zeze', 'zeze')) {
+        echo 'Mise à jour des informations réussie';
+    }
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 // $user_infos = $test->getAllInfos();
 
