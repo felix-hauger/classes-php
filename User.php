@@ -96,9 +96,9 @@ class User
     /**
      * register a user in database
      * for parameters infos see class properties
-     * @return array with user infos
+     * @return boolean true if insert request is sent
      */
-    public function register($login, $password, $email, $firstname, $lastname): void
+    public function register($login, $password, $email, $firstname, $lastname): bool
     {
         // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -122,6 +122,8 @@ class User
             $insert->bind_param('sssss', $login, $hashed_password, $checked_email, $firstname, $lastname);
     
             $insert->execute();
+
+            return true;
         }
 
     }
@@ -284,41 +286,41 @@ class User
 }
 
 session_start();
-$test = new User;
+$user = new User;
 // try {
-//     if ($test->register('tete', 'tete', 'tete@tete.fr', 'tete', 'tete')) {
-//         echo 'Inscription réussie';
+//     if ($user->register('tete', 'tete', 'tete@tete.fr', 'tete', 'tete')) {
+//         echo 'Inscription réussie' . "\n";
 //     }
 // } catch (Exception $e) {
-//     echo $e->getMessage();
+//     echo $e->getMessage() . "\n";
 // }
 
 try {
-    if ($test->connect('toto', 'toto')) {
-        echo 'Connexion réussie ! Vous êtes maintenant connecté en tant que ' . $test->{'login'} . "\n";
+    if ($user->connect('tyty', 'tyty')) {
+        echo 'Connexion réussie ! Vous êtes maintenant connecté en tant que ' . $user->{'login'} . "\n";
     }
 } catch (Exception $e) {
-    echo $e->getMessage();
+    echo $e->getMessage() . "\n";
 }
 
-var_dump($_SESSION);
+// var_dump($_SESSION);
 
 // try {
-//     if ($test->update('zeze', 'zeze', 'zeze@zeze.fr', 'zeze', 'zeze')) {
+//     if ($user->update('tyty', 'tyty', 'tyty@tyty.fr', 'tyty', 'tyty')) {
 //         echo 'Mise à jour des informations réussie';
 //     }
 // } catch (Exception $e) {
-//     echo $e->getMessage();
+//     echo $e->getMessage() . "\n";
 // }
 
-// $user_infos = $test->getAllInfos();
+// $user_infos = $user->getAllInfos();
 
 // var_dump($user_infos);
 
-$test->isConnected();
+$user->isConnected();
 
-// $test->disconnect();
-// $test->isConnected();
+// $user->disconnect();
+// $user->isConnected();
 // var_dump($_SESSION);
-// $test->delete();
-// var_dump($test);
+// $user->delete();
+// var_dump($user);
