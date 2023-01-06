@@ -23,7 +23,7 @@ class User
     private $login;
 
     /**
-     * @var string personal info, used to login & update user infos in database
+     * @var string personal info
      */
     private $email;
 
