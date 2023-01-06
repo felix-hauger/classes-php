@@ -20,22 +20,22 @@ class User
     /**
      * @var string used to log in & update user infos in database
      */
-    public $login;
+    private $login;
 
     /**
      * @var string personal info, used to login & update user infos in database
      */
-    public $email;
+    private $email;
 
     /**
      * @var string personal info
      */
-    public $firstname;
+    private $firstname;
 
     /**
      * @var string personal info
      */
-    public $lastname;
+    private $lastname;
 
     /**
      * set connection to the database
