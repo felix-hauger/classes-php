@@ -96,7 +96,7 @@ class User
     /**
      * register a user in database
      * for parameters infos see class properties
-     * @return boolean true if insert request is sent
+     * @return boolean true after request is sent
      */
     public function register($login, $password, $email, $firstname, $lastname): bool
     {
