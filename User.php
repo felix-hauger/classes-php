@@ -277,7 +277,7 @@ class User
 
         $delete = $this->db->prepare($sql);
 
-        $delete->bind_param('i', $_SESSION['id']);
+        $delete->bind_param('i', $this->id);
 
         $delete->execute();
 
