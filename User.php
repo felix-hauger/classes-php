@@ -98,7 +98,7 @@ class User
      * for parameters infos see class properties
      * @return array with user infos
      */
-    public function register($login, $password, $email, $firstname, $lastname):void
+    public function register($login, $password, $email, $firstname, $lastname): void
     {
         // Assign $checked_email $mail or false filtered by filter_var, & throw error if false at the same time
         if (!$checked_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -128,18 +128,18 @@ class User
 
     /**
      * log user in session
-     * @param string $login_or_email to compare to both logins & emails in db
+     * @param string $login to compare to logins in db
      * @param string $password to check credentials
      * @return object $this
      */
-    public function connect($login_or_email, $password): object
+    public function connect($login, $password): object
     {
         // check if login exists
-        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = ? OR email = ?';
+        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = ?';
 
         $select = $this->db->prepare($sql);
 
-        $select->bind_param('ss', $login_or_email, $login_or_email);
+        $select->bind_param('s', $login);
 
         $select->execute();
 
@@ -285,9 +285,6 @@ class User
 
 session_start();
 $test = new User;
-// $test->login = 'titi';
-// var_dump($test->login);
-// var_dump($test->isLoginInDb());
 // try {
 //     if ($test->register('tete', 'tete', 'tete@tete.fr', 'tete', 'tete')) {
 //         echo 'Inscription réussie';
@@ -297,28 +294,28 @@ $test = new User;
 // }
 
 try {
-    if ($test->connect('tete@tete.fr', 'tete')) {
+    if ($test->connect('toto', 'toto')) {
         echo 'Connexion réussie ! Vous êtes maintenant connecté en tant que ' . $test->{'login'} . "\n";
     }
 } catch (Exception $e) {
     echo $e->getMessage();
 }
 
-// var_dump($_SESSION);
+var_dump($_SESSION);
 
-try {
-    if ($test->update('zeze', 'zeze', 'zeze@zeze.fr', 'zeze', 'zeze')) {
-        echo 'Mise à jour des informations réussie';
-    }
-} catch (Exception $e) {
-    echo $e->getMessage();
-}
+// try {
+//     if ($test->update('zeze', 'zeze', 'zeze@zeze.fr', 'zeze', 'zeze')) {
+//         echo 'Mise à jour des informations réussie';
+//     }
+// } catch (Exception $e) {
+//     echo $e->getMessage();
+// }
 
 // $user_infos = $test->getAllInfos();
 
 // var_dump($user_infos);
 
-// var_dump($test->isConnected());
+$test->isConnected();
 
 // $test->disconnect();
 // $test->isConnected();
