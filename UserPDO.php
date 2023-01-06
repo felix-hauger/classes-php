@@ -7,27 +7,43 @@ class UserPDO extends DbConnection
     /**
      * @var int used to get & update user infos
      */
-    private $id;
+    private $_id;
 
     /**
      * @var string used to log in & update user infos in database
      */
-    private $login;
+    private $_login;
+
+    /**
+     * @var string used to log in & update user infos in database
+     */
+    private $_password;
 
     /**
      * @var string personal info
      */
-    private $email;
+    private $_email;
 
     /**
      * @var string personal info
      */
-    private $firstname;
+    public $_firstname;
 
     /**
      * @var string personal info
      */
-    private $lastname;
+    private $_lastname;
+
+    public function __construct($login, $password, $email = null, $firstname = null, $lastname = null)
+    {
+        parent::__construct();
+
+        $this->_login = $login;
+        $this->_password = $password;
+        $this->_email = $email;
+        $this->_firstname = $firstname;
+        $this->_lastname = $lastname;
+    }
 
     public function verifyLogins($login, $email)
     {
@@ -99,20 +115,56 @@ class UserPDO extends DbConnection
             }
         }
     }
+
+    public function connect()
+    {
+        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE login = :login';
+
+        $select = $this->_pdo->prepare($sql);
+
+        $select->bindParam(':login', $this->_login);
+        
+        $select->execute();
+
+        $user = $select->fetch(PDO::FETCH_ASSOC);
+
+        if ($user !== null) {
+
+            // check if password matches
+            if (password_verify($this->_password, $user['password'])) {
+                $this->_id = $user['id'];
+                $this->_login = $user['login'];
+                $this->_email = $user['email'];
+                $this->_firstname = $user['firstname'];
+                $this->_lastname = $user['lastname'];
+
+                if (session_status() === PHP_SESSION_ACTIVE) {
+                    $_SESSION['user_id'] = $this->_id;
+                    return $this;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        throw new Exception('identifiants incorrects.');
+    }
+
+    public function isConnected(): bool
+    {
+        if (isset($_SESSION['user_id'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }
 
-$user_pdo = new UserPDO();
 
 // var_dump($user_pdo);
 
-$test = $user_pdo->verifyLogins('toto', 'tot@toto.fr');
+// $test = $user_pdo->verifyLogins('toto', 'tot@toto.fr');
 
-var_dump($test);
-
-try {
-    if ($user_pdo->register('tete', 'tete', 'tete@tete.fr', 'tete', 'tete')) {
-        echo 'Inscription réussie';
-    }
-} catch (Exception $e) {
-    echo 'Erreur : ' . $e->getMessage();
-}
+// var_dump($test);
