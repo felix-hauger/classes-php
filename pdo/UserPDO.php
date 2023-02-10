@@ -209,6 +209,8 @@ class UserPDO extends DbConnection
             $this->_email = $email;
             $this->_firstname = $firstname;
             $this->_lastname = $lastname;
+
+            // ----- Use $_infos to update?
     
             // return to get value, and we can display success message
             return $this;
