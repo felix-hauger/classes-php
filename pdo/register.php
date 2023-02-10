@@ -1,6 +1,6 @@
 <?php
 
-require_once 'UserPDO.php';
+require_once 'class/UserPDO.php';
 
 $login = 'tyty';
 $password = 'tyty';

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'UserPDO.php';
+require_once 'class/UserPDO.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
