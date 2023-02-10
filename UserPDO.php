@@ -33,6 +33,11 @@ class UserPDO extends DbConnection
      * @var string personal info
      */
     private $_lastname;
+    
+    /**
+     * @var array contains user infos
+     */
+    private $_infos;
 
     public function __construct($login, $password, $email = null, $firstname = null, $lastname = null)
     {
@@ -83,7 +88,7 @@ class UserPDO extends DbConnection
 
     public function register($login, $password, $email, $firstname, $lastname)
     {
-        // Assign $email false or $email filtered by filter_var, & throw error if false at the same time
+        // Assign to $email false or $email filtered by filter_var, & throw error if false at the same time
         if (!$email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new Exception('Format email invalide');
         } else {
@@ -137,6 +142,8 @@ class UserPDO extends DbConnection
                 $this->_email = $user['email'];
                 $this->_firstname = $user['firstname'];
                 $this->_lastname = $user['lastname'];
+                $this->_infos = $user;
+                var_dump($this->_infos);
 
                 if (session_status() === PHP_SESSION_ACTIVE) {
                     $_SESSION['user_id'] = $this->_id;
@@ -159,6 +166,55 @@ class UserPDO extends DbConnection
         }
     }
 
+        /**
+     * update user infos in db
+     * for parameters infos see class properties
+     * @return object $this
+     */
+    public function update($login = null, $password = null, $email = null, $firstname = null, $lastname = null, Array $infos = []): object
+    {
+        if (!empty($infos)) {
+            foreach ($infos as $info) {
+                // var_dump($info);
+                echo "$info \n";
+            }
+        }
+
+
+        // Assign to $email false or $email filtered by filter_var, & throw error if false at the same time
+        if (!$email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Erreur : format email invalide');
+        }
+
+        $search_logins = $this->verifyLogins($login, $email);
+
+        if ($search_logins['found_login']) {
+            throw new Exception('Le login existe déjà !');
+        } elseif ($search_logins['found_email']) {
+            throw new Exception('Adresse mail déjà utilisée');
+        } else {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
+    
+            // update user infos in db
+            $sql = 'UPDATE users SET login = ?, password = ?, email = ?, firstname = ?, lastname = ? WHERE id = ?';
+
+            $update = $this->_pdo->prepare($sql);
+    
+            // $update->bind_param('sssssi', $login, $hashed_password, $email, $firstname, $lastname, $this->_id);
+    
+            $update->execute();
+    
+            // update object infos that will be updated in the session variable
+            $this->_login = $login;
+            $this->_email = $email;
+            $this->_firstname = $firstname;
+            $this->_lastname = $lastname;
+    
+            // return to get value, and we can display success message
+            return $this;
+        }
+
+    }
 
 }
 
