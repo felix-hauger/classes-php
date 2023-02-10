@@ -54,7 +54,7 @@ class User
      * @param string $email check the email column
      * @return array of 2 booleans
      */
-    public function verifyLogins($login, $email)
+    private function verifyLogins($login, $email)
     {
         // are false until found in db
         $logins_array = [
@@ -298,8 +298,8 @@ $user = new User;
 // }
 
 try {
-    if ($user->connect('tyty', 'tyty')) {
-        echo 'Connexion réussie ! Vous êtes maintenant connecté en tant que ' . $user->{'login'} . "\n";
+    if ($user->connect('t', 't')) {
+        echo 'Connexion réussie ! Vous êtes maintenant connecté en tant que ' . $user->getLogin() . "\n";
     }
 } catch (Exception $e) {
     echo $e->getMessage() . "\n";
@@ -307,13 +307,13 @@ try {
 
 // var_dump($_SESSION);
 
-// try {
-//     if ($user->update('tyty', 'tyty', 'tyty@tyty.fr', 'tyty', 'tyty')) {
-//         echo 'Mise à jour des informations réussie';
-//     }
-// } catch (Exception $e) {
-//     echo $e->getMessage() . "\n";
-// }
+try {
+    if ($user->update('admin', 'admin', 'admin@admin.fr', 'admin', 'admin')) {
+        echo 'Mise à jour des informations réussie';
+    }
+} catch (Exception $e) {
+    echo $e->getMessage() . "\n";
+}
 
 // $user_infos = $user->getAllInfos();
 
