@@ -142,19 +142,19 @@ class UserPDO extends DbConnection
                 $this->_email = $user['email'];
                 $this->_firstname = $user['firstname'];
                 $this->_lastname = $user['lastname'];
-                $this->_infos = $user;
-                var_dump($this->_infos);
+                // $this->_infos = $user;
+                // var_dump($this->_infos);
 
                 if (session_status() === PHP_SESSION_ACTIVE) {
+                    $this->_pdo = null;
                     $_SESSION['user_id'] = $this->_id;
+                    $_SESSION['user'] = $this;
                     return $this;
-                } else {
-                    return false;
                 }
             }
+            throw new Exception('identifiants incorrects.');
         }
-
-        throw new Exception('identifiants incorrects.');
+        return false;
     }
 
     public function isConnected(): bool
@@ -218,6 +218,132 @@ class UserPDO extends DbConnection
 
     }
 
+
+    /**
+     * Get used to get & update user infos
+     */
+    public function getId(): int
+    {
+        return $this->_id;
+    }
+
+    /**
+     * Set used to get & update user infos
+     */
+    public function setId(int $_id): self
+    {
+        $this->_id = $_id;
+
+        return $this;
+    }
+
+    /**
+     * Get used to log in & update user infos in database
+     */
+    public function getLogin(): string
+    {
+        return $this->_login;
+    }
+
+    /**
+     * Set used to log in & update user infos in database
+     */
+    public function setLogin(string $_login): self
+    {
+        $this->_login = $_login;
+
+        return $this;
+    }
+
+    /**
+     * Get used to log in & update user infos in database
+     */
+    public function getPassword(): string
+    {
+        return $this->_password;
+    }
+
+    /**
+     * Set used to log in & update user infos in database
+     */
+    public function setPassword(string $_password): self
+    {
+        $this->_password = $_password;
+
+        return $this;
+    }
+
+    /**
+     * Get personal info
+     */
+    public function getEmail(): string
+    {
+        return $this->_email;
+    }
+
+    /**
+     * Set personal info
+     */
+    public function setEmail(string $_email): self
+    {
+        $this->_email = $_email;
+
+        return $this;
+    }
+
+    /**
+     * Get personal info
+     */
+    public function getFirstname(): string
+    {
+        return $this->_firstname;
+    }
+
+    /**
+     * Set personal info
+     */
+    public function setFirstname(string $_firstname): self
+    {
+        $this->_firstname = $_firstname;
+
+        return $this;
+    }
+
+    /**
+     * Get personal info
+     */
+    public function getLastname(): string
+    {
+        return $this->_lastname;
+    }
+
+    /**
+     * Set personal info
+     */
+    public function setLastname(string $_lastname): self
+    {
+        $this->_lastname = $_lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get contains user infos
+     */
+    public function getInfos(): array
+    {
+        return $this->_infos;
+    }
+
+    /**
+     * Set contains user infos
+     */
+    public function setInfos(array $_infos): self
+    {
+        $this->_infos = $_infos;
+
+        return $this;
+    }
 }
 
 
