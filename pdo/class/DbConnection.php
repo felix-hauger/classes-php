@@ -1,10 +1,10 @@
 <?php
 
-class DbConnection
+abstract class DbConnection
 {
     protected $_pdo;
 
-    public function __construct()
+    protected function __construct()
     {
         try {
             $this->_pdo = new PDO('mysql:host=localhost;dbname=classes;charset=utf8','root','');
