@@ -39,7 +39,7 @@ class UserPDO extends DbConnection
      */
     private $_infos;
 
-    public function __construct($login, $password, $email = null, $firstname = null, $lastname = null)
+    public function __construct($login, $password = null, $email = null, $firstname = null, $lastname = null)
     {
         parent::__construct();
 
@@ -183,7 +183,7 @@ class UserPDO extends DbConnection
 
         // Assign to $email false or $email filtered by filter_var, & throw error if false at the same time
         if (!$email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception('Erreur : format email invalide');
+            throw new Exception('Format email invalide');
         }
 
         $search_logins = $this->verifyLogins($login, $email);
@@ -196,19 +196,34 @@ class UserPDO extends DbConnection
             $hashed_password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 10]);
     
             // update user infos in db
-            $sql = 'UPDATE users SET login = ?, password = ?, email = ?, firstname = ?, lastname = ? WHERE id = ?';
+            $sql = 'UPDATE users SET login = :login, password = :password, email = :email, firstname = :firstname, lastname = :lastname WHERE id = :id';
 
             $update = $this->_pdo->prepare($sql);
+
+            $update->bindParam(':login', $login);
+            $update->bindParam(':password', $hashed_password);
+            $update->bindParam(':email', $email);
+            $update->bindParam(':firstname', $firstname);
+            $update->bindParam(':lastname', $lastname);
+            $update->bindParam(':id', $_SESSION['user_id']);
+            var_dump($this->_id);
     
             // $update->bind_param('sssssi', $login, $hashed_password, $email, $firstname, $lastname, $this->_id);
     
-            $update->execute();
+            try {
+                //code...
+                if ($update->execute()) {
+                    // update object infos that will be updated in the session variable
+                    $this->_login = $login;
+                    $this->_email = $email;
+                    $this->_firstname = $firstname;
+                    $this->_lastname = $lastname;
+                }
+            } catch (Exception $e) {
+                throw new Exception('Erreur dans la mise à jour des information : ' . $e->getMessage());
+            }
     
-            // update object infos that will be updated in the session variable
-            $this->_login = $login;
-            $this->_email = $email;
-            $this->_firstname = $firstname;
-            $this->_lastname = $lastname;
+
 
             // ----- Use $_infos to update?
     
