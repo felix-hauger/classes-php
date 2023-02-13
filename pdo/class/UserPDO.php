@@ -39,7 +39,7 @@ class UserPDO extends DbConnection
      */
     private $_infos;
 
-    public function __construct($login, $password = null, $email = null, $firstname = null, $lastname = null)
+    public function __construct($login = null, $password = null, $email = null, $firstname = null, $lastname = null)
     {
         parent::__construct();
 
@@ -233,6 +233,23 @@ class UserPDO extends DbConnection
 
     }
 
+
+    public function getAllInfos()
+    {
+        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = :id';
+
+        $select = $this->_pdo->prepare($sql);
+
+        $select->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+        var_dump($this->_pdo);
+
+        if ($select->execute()) {
+            $user_infos = $select->fetch(PDO::FETCH_ASSOC);
+            var_dump($user_infos);
+            $this->_infos = $user_infos;
+            return $this->_infos;
+        }
+    }
 
     /**
      * Get used to get & update user infos
