@@ -34,7 +34,7 @@ var_dump('session', $_SESSION);
 ?>
 
 <form action="" method="post">
-    <input type="text" name="login" id="login" placeholder="Login ou email">
+    <input type="text" name="login" id="login" placeholder="Login">
     <input type="password" name="password" id="password" placeholder="Mot de passe">
     <input type="submit" name="submit" value="Connexion">
 </form>
