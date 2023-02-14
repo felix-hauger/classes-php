@@ -12,9 +12,10 @@ if (!isset($_SESSION['user_id'])) {
     die();
 }
 
-$user = new UserPDO;
+$logged_user = new UserPDO();
 
-$user_infos = $user->getAllInfos();
+$user_infos = $logged_user->getAllInfos();
+
 
 var_dump($_SESSION);
 
@@ -71,15 +72,15 @@ if (isset($_POST['submit'])) {
 ?>
 
 <form action="" method="post">
-    <input type="text" name="login" placeholder="Login"  value="<?= $user_infos['login'] ?>">
-    <input type="email" name="email" id="email" placeholder="Email"  value="<?= $user_infos['email'] ?>">
+    <input type="text" name="login" placeholder="Login"  value="<?= $logged_user->getLogin() ?>">
+    <input type="email" name="email" id="email" placeholder="Email"  value="<?= $logged_user->getEmail() ?>">
     <input type="password" name="password" id="password" placeholder="Mot de Passe">
     <input type="password" name="password-confirm" id="password-confirm" placeholder="Confirmation Mot de Passe">
     <?php if (isset($errors['confirm'])) : ?>
         <span style="color: red;"><?= $errors['confirm'] ?></span>
     <?php endif ?>
-    <input type="text" name="firstname" placeholder="Prénom" value="<?= $user_infos['firstname'] ?>">
-    <input type="text" name="lastname" placeholder="Nom" value="<?= $user_infos['lastname'] ?>">
+    <input type="text" name="firstname" placeholder="Prénom" value="<?= $logged_user->getFirstname() ?>">
+    <input type="text" name="lastname" placeholder="Nom" value="<?= $logged_user->getLastname() ?>">
     <input type="submit" name="submit" value="Inscription">
     <?php if (isset($errors['unfilled'])) : ?>
         <span style="color: red;"><?= $errors['unfilled'] ?></span>
