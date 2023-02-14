@@ -146,9 +146,9 @@ class UserPDO extends DbConnection
                 // var_dump($this->_infos);
 
                 if (session_status() === PHP_SESSION_ACTIVE) {
-                    $this->_pdo = null;
+                    // $this->_pdo = null;
                     $_SESSION['user_id'] = $this->_id;
-                    $_SESSION['user'] = $this;
+                    // $_SESSION['user'] = $this;
                     return $this;
                 }
             }
@@ -170,7 +170,7 @@ class UserPDO extends DbConnection
      * for parameters infos see class properties
      * @return object $this
      */
-    public function update($login = null, $password = null, $email = null, $firstname = null, $lastname = null, Array $infos = []): object
+    public function update($login = null, $password = null, $email = null, $firstname = null, $lastname = null): object
     {
         if (!empty($infos)) {
             foreach ($infos as $info) {
@@ -204,7 +204,7 @@ class UserPDO extends DbConnection
             $update->bindParam(':email', $email);
             $update->bindParam(':firstname', $firstname);
             $update->bindParam(':lastname', $lastname);
-            $update->bindParam(':id', $_SESSION['user_id']);
+            $update->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
             var_dump($this->_id);
     
             // $update->bind_param('sssssi', $login, $hashed_password, $email, $firstname, $lastname, $this->_id);
@@ -233,11 +233,24 @@ class UserPDO extends DbConnection
     }
 
     /**
+     * unset user infos from session
+     */
+    public function disconnect()
+    {
+        var_dump($_SESSION);
+        if (isset($_SESSION['user_id'])) {
+            unset($_SESSION['user_id']);
+        }
+    }
+
+
+
+    /**
      * get user infos to database and store them in $_infos property
      */
     public function getAllInfos()
     {
-        $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = :id';
+        $sql = 'SELECT id, login, email, firstname, lastname FROM users WHERE id = :id';
 
         $select = $this->_pdo->prepare($sql);
 
