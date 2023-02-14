@@ -7,8 +7,11 @@ session_start();
 
 $logged_user = new UserPDO();
 
-$logged_user->getAllInfos();
+if ($logged_user->getAllInfos()) {
+    $firstname = $logged_user->getFirstname();
+}
+
 
 ?>
 
-<h1>Bonjour <?= $logged_user->getFirstname() ?></h1>
+<h1>Bonjour <?= isset($firstname) ? $firstname : 'invité' ?></h1>

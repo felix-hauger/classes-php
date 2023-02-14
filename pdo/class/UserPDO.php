@@ -243,7 +243,21 @@ class UserPDO extends DbConnection
         }
     }
 
+    /**
+     * delete user from database, then disconnect
+     */
+    public function delete()
+    {
+        $sql = 'DELETE FROM users WHERE id = :id';
 
+        $delete = $this->_pdo->prepare($sql);
+
+        $delete->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
+
+        $delete->execute();
+
+        $this->disconnect();
+    }
 
     /**
      * get user infos to database and store them in $_infos property
@@ -255,11 +269,9 @@ class UserPDO extends DbConnection
         $select = $this->_pdo->prepare($sql);
 
         $select->bindParam(':id', $_SESSION['user_id'], PDO::PARAM_INT);
-        var_dump($this->_pdo);
 
         if ($select->execute()) {
             $user_infos = $select->fetch(PDO::FETCH_ASSOC);
-            var_dump($user_infos);
             $this->_infos = $user_infos;
             return $this->_infos;
         }

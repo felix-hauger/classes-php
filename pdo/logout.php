@@ -1,6 +1,5 @@
 <?php
 
-require_once 'class/DbConnection.php';
 require_once 'class/UserPDO.php';
 
 session_start();
