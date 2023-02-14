@@ -6,6 +6,12 @@ require_once 'class/Form.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    die();
+}
+
 $user = new UserPDO;
 
 $user_infos = $user->getAllInfos();
@@ -50,7 +56,7 @@ if (isset($_POST['submit'])) {
 
             try {
                 if ($user_pdo->update($login, $password, $email, $firstname, $lastname)) {
-                    echo 'Mise à jour des informations réussie';
+                    header('Location: update.php');
                 }
             } catch (Exception $e) {
                 echo 'Erreur : ' . $e->getMessage();
