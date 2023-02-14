@@ -232,7 +232,9 @@ class UserPDO extends DbConnection
 
     }
 
-
+    /**
+     * get user infos to database and store them in $_infos property
+     */
     public function getAllInfos()
     {
         $sql = 'SELECT id, login, password, email, firstname, lastname FROM users WHERE id = :id';
@@ -255,17 +257,7 @@ class UserPDO extends DbConnection
      */
     public function getId(): int
     {
-        return $this->_id;
-    }
-
-    /**
-     * Set used to get & update user infos
-     */
-    public function setId(int $_id): self
-    {
-        $this->_id = $_id;
-
-        return $this;
+        return $this->_infos['id'];
     }
 
     /**
@@ -273,35 +265,7 @@ class UserPDO extends DbConnection
      */
     public function getLogin(): string
     {
-        return $this->_login;
-    }
-
-    /**
-     * Set used to log in & update user infos in database
-     */
-    public function setLogin(string $_login): self
-    {
-        $this->_login = $_login;
-
-        return $this;
-    }
-
-    /**
-     * Get used to log in & update user infos in database
-     */
-    public function getPassword(): string
-    {
-        return $this->_password;
-    }
-
-    /**
-     * Set used to log in & update user infos in database
-     */
-    public function setPassword(string $_password): self
-    {
-        $this->_password = $_password;
-
-        return $this;
+        return $this->_infos['login'];
     }
 
     /**
@@ -309,17 +273,7 @@ class UserPDO extends DbConnection
      */
     public function getEmail(): string
     {
-        return $this->_email;
-    }
-
-    /**
-     * Set personal info
-     */
-    public function setEmail(string $_email): self
-    {
-        $this->_email = $_email;
-
-        return $this;
+        return $this->_infos['email'];
     }
 
     /**
@@ -327,17 +281,7 @@ class UserPDO extends DbConnection
      */
     public function getFirstname(): string
     {
-        return $this->_firstname;
-    }
-
-    /**
-     * Set personal info
-     */
-    public function setFirstname(string $_firstname): self
-    {
-        $this->_firstname = $_firstname;
-
-        return $this;
+        return $this->_infos['firstname'];
     }
 
     /**
@@ -345,35 +289,7 @@ class UserPDO extends DbConnection
      */
     public function getLastname(): string
     {
-        return $this->_lastname;
-    }
-
-    /**
-     * Set personal info
-     */
-    public function setLastname(string $_lastname): self
-    {
-        $this->_lastname = $_lastname;
-
-        return $this;
-    }
-
-    /**
-     * Get contains user infos
-     */
-    public function getInfos(): array
-    {
-        return $this->_infos;
-    }
-
-    /**
-     * Set contains user infos
-     */
-    public function setInfos(array $_infos): self
-    {
-        $this->_infos = $_infos;
-
-        return $this;
+        return $this->_infos['lastname'];
     }
 }
 
