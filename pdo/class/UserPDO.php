@@ -133,7 +133,7 @@ class UserPDO extends DbConnection
 
         $user = $select->fetch(PDO::FETCH_ASSOC);
 
-        if ($user !== null) {
+        if ($user) {
 
             // check if password matches
             if (password_verify($this->_password, $user['password'])) {
@@ -152,9 +152,8 @@ class UserPDO extends DbConnection
                     return $this;
                 }
             }
-            throw new Exception('identifiants incorrects.');
         }
-        return false;
+        throw new Exception('identifiants incorrects.');
     }
 
     public function isConnected(): bool
